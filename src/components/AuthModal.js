@@ -20,7 +20,7 @@ const AuthModal = ({ setShowModal }) => {
 
   return (
     <div className="auth-modal">
-      <span onClick={handleClick} className="auth-close">
+      <span onClick={handleClick} className="close-icon">
         &#10006; <br />
       </span>
       <h2>{isSignUp ? "CREATE ACCOUNT" : "LOG IN"}</h2>
@@ -48,10 +48,10 @@ const AuthModal = ({ setShowModal }) => {
         />
 
         <input
-          type="password-check"
+          type="password"
           id="password-check"
           name="password-check"
-          placeholder="Confirm password"
+          placeholder="confirm password"
           required={true}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
@@ -59,6 +59,9 @@ const AuthModal = ({ setShowModal }) => {
         <input type="submit" className="secondary-button" />
         <p>{error && error}</p>
       </form>
+
+      <hr />
+      <h2>GET THE APP</h2>
     </div>
   );
 };
