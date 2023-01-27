@@ -101,8 +101,22 @@ nav .logo-container .logo {
   transition: all 1s ease-in;
 }
 
-.auth-close {
+.auth-modal .auth-close {
   cursor: pointer;
   color: rgb(254, 48, 114);
   font-weight: 900;
+  float: right;
+  margin: -7% -7% 0 0;
+}
+
+@media screen and (max-width: 370px) {
+  .auth-modal .auth-close {
+    margin: -10% -10% 0 0;
+  }
+}
+
+@media screen and (max-width: 280px) {
+  .auth-modal .auth-close {
+    margin: -15% -15% 0 0;
+  }
 }
