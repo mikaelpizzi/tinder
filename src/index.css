@@ -149,6 +149,83 @@ nav .logo-container .logo {
   font-size: 17px;
 }
 
+/* Onboarding page */
+
+.onboarding form {
+  display: flex;
+  justify-content: center;
+}
+
+.onboarding form section {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 35%;
+  text-align: start;
+}
+
+.onboarding form input {
+  padding: 15px 30px;
+  margin: 10px 0;
+  font-size: 15px;
+  border: solid 2px rgb(219, 219, 219);
+  border-radius: 10px;
+}
+
+.onboarding form input::-webkit-outer-spin-button,
+.onboarding form input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.onboarding form label {
+  margin: 10px 0;
+}
+
+.onboarding form .multiple-input-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.onboarding form .multiple-input-container input {
+  margin-right: 10px;
+}
+
+.onboarding form label {
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 3s;
+  margin-right: 10px;
+}
+
+.onboarding form .multiple-input-container label {
+  border: solid 2px rgb(144, 144, 144);
+}
+
+.onboarding form input[type="number"] {
+  width: 10%;
+}
+
+.onboarding form input[type="radio"] {
+  display: none;
+}
+
+.onboarding form input[type="radio"]:checked + label {
+  border: solid 2px rgb(221, 39, 22);
+}
+
+.onboarding form input[type="submit"] {
+  transition: 0.25s ease;
+}
+
+.onboarding form input[type="submit"]:hover {
+  transform: scale(0.95);
+}
+
+.onboarding form input[type="submit"]:active {
+  background-color: rgb(226, 115, 115);
+}
+
 @media screen and (max-width: 370px) {
   .auth-modal .auth-close {
     margin: -10% -10% 0 0;
