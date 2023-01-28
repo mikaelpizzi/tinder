@@ -141,7 +141,7 @@ const Onboarding = () => {
               type="text"
               name="about"
               required={true}
-              placeholder="I like long walk..."
+              placeholder="I like long walks..."
               value={""}
               onChange={handleChange}
             />
