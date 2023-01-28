@@ -235,6 +235,50 @@ nav .logo-container .logo {
   border-radius: 10px;
 }
 
+/* Dashboard */
+
+.dashboard {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dashboard .swipe-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.swipe {
+  position: absolute;
+}
+
+.dashboard .card-container {
+  width: 400px;
+  height: 650px;
+}
+
+.card {
+  width: 400px;
+  height: 650px;
+  border-radius: 30px;
+  background-size: cover;
+  background-position: center;
+}
+
+.card h3 {
+  margin-top: 20px;
+}
+
+.dashboard .swipe-info {
+  position: absolute;
+  bottom: 0;
+  padding: 0 0 0 20px;
+  justify-content: center;
+}
+
 @media screen and (max-width: 370px) {
   .auth-modal .auth-close {
     margin: -10% -10% 0 0;
