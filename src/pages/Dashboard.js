@@ -40,7 +40,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      {/* <ChatContainer /> */}
+      <ChatContainer />
       <div className="swipe-container">
         <div className="card-container">
           {characters.map((character) => (
