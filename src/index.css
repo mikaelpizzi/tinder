@@ -4,6 +4,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  text-align: center;
 }
 
 * {
@@ -12,6 +13,11 @@ body {
 
 h2 {
   font-style: italic;
+}
+
+.primary-title {
+  font-size: 90px;
+  color: white;
 }
 
 .primary-button {
@@ -47,10 +53,6 @@ h2 {
   color: rgb(48, 48, 48);
   border: 2px solid rgb(48, 48, 48);
   transform: scale(0.95);
-}
-
-body {
-  text-align: center;
 }
 
 /* Navbar */
@@ -101,21 +103,26 @@ nav .logo-container .logo {
   height: 100vh;
   position: fixed;
   background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.65) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+      to bottom,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    url("images/tinder.webp");
+}
+
+.home {
+  margin-top: 30vh;
 }
 
 /* Auth Modal */
 .auth-modal {
   position: absolute;
-  top: 175px;
+  top: 20px;
   left: 0;
   right: 0;
   margin: 50px auto;
   max-width: 360px;
-  height: 600px;
+  height: 500px;
   background-color: snow;
   border-radius: 10px;
   padding: 48px;
