@@ -2,11 +2,13 @@ import React from "react";
 import whiteLogo from "../images/tinder-white.png";
 import colorLogo from "../images/tinder-logo.png";
 
-const Nav = ({ minimal, authToken, setShowModal, showModal, setIsSignUp }) => {
+const Nav = ({ minimal, setShowModal, showModal, setIsSignUp }) => {
   const handleClick = () => {
     setShowModal(true);
     setIsSignUp(false);
   };
+
+  const authToken = false;
 
   return (
     <nav>
@@ -18,7 +20,7 @@ const Nav = ({ minimal, authToken, setShowModal, showModal, setIsSignUp }) => {
         />
       </div>
 
-      {!authToken && (
+      {!authToken && !minimal && (
         <button
           className="nav-button"
           onClick={handleClick}

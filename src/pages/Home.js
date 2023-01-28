@@ -6,7 +6,7 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
 
-  const authToken = false;
+  const authToken = true;
 
   const handleClick = () => {
     console.log("clicked!");
@@ -18,7 +18,6 @@ const Home = () => {
     <div className="overlay">
       <Nav
         minimal={false}
-        authToken={authToken}
         setShowModal={setShowModal}
         showModal={showModal}
         setIsSignUp={setIsSignUp}
