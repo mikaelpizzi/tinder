@@ -151,6 +151,10 @@ nav .logo-container .logo {
 
 /* Onboarding page */
 
+.onboarding {
+  border-top: 1px solid rgb(154, 154, 154);
+}
+
 .onboarding form {
   display: flex;
   justify-content: center;
@@ -194,7 +198,7 @@ nav .logo-container .logo {
 .onboarding form label {
   padding: 10px;
   border-radius: 10px;
-  transition: all 3s;
+  transition: all 0.5s;
   margin-right: 10px;
 }
 
@@ -224,6 +228,11 @@ nav .logo-container .logo {
 
 .onboarding form input[type="submit"]:active {
   background-color: rgb(226, 115, 115);
+}
+
+.onboarding form .photo-container img {
+  width: 100%;
+  border-radius: 10px;
 }
 
 @media screen and (max-width: 370px) {
