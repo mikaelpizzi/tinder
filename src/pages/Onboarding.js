@@ -63,7 +63,7 @@ const Onboarding = () => {
             <label>Gender</label>
             <div className="multiple-input-container">
               <input
-                id="man-gender- y"
+                id="man-gender-identity"
                 type="radio"
                 name="gender_identity"
                 value="man"
