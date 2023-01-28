@@ -132,7 +132,7 @@ const Onboarding = () => {
                 onChange={handleChange}
                 checked={false}
               />
-              <label htmlFor="everyone-gender-interest">More</label>
+              <label htmlFor="everyone-gender-interest">Everyone</label>
             </div>
 
             <label htmlFor="about">About me</label>
