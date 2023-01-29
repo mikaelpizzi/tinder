@@ -2,10 +2,14 @@ const PORT = 8000;
 const express = require("express");
 const { MongoClient } = require("mongodb");
 const { v1: uuidv1 } = require("uuid");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
 const uri =
   "mongodb+srv://mozart:amadeus@cluster0.tgjmuwg.mongodb.net/?retryWrites=true&w=majority";
 const app = express();
+app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json("Hello");
@@ -22,9 +26,9 @@ app.post("/signup", async (req, res) => {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
-
     const sanitizedEmail = email.toLowerCase();
-    const existingUser = users.findOne({ sanitizedEmail });
+
+    const existingUser = await users.findOne({ sanitizedEmail });
 
     if (existingUser) {
       return res.status(409).send("User already exists. Please log in");
@@ -41,12 +45,13 @@ app.post("/signup", async (req, res) => {
     const token = jwt.sign(insertedUser, sanitizedEmail, {
       expiresIn: 60 * 24,
     });
-
     res
       .status(201)
       .json({ token, userId: generatedUserId, email: sanitizedEmail });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
   }
 });
 
