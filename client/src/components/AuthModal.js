@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCookie } from "react-cookie";
 
 const AuthModal = ({ setShowModal, isSignUp }) => {
   const [email, setEmail] = useState(null);
@@ -8,6 +9,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookie(["user"]);
 
   console.log(email, password, confirmPassword);
 
@@ -28,6 +30,10 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
         email,
         password,
       });
+
+      setCookie("Email", response.data.email);
+      setCookie("UserId", response.data.userId);
+      setCookie("AuthToken", response.data.token);
 
       const success = response.status === 201;
 
