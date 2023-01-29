@@ -6,7 +6,7 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
 
-  const authToken = true;
+  const authToken = false;
 
   const handleClick = () => {
     console.log("clicked!");
