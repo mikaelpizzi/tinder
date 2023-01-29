@@ -5,6 +5,8 @@ const ChatInput = () => {
   return (
     <div className="chat-input">
       <textarea
+        rows={5}
+        placeholder="write here..."
         value={textArea}
         onChange={(e) => setTextArea(e.target.value)}
       />
