@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import Nav from "../components/Nav";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
+  let navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     user_id: cookies.UserId,
@@ -14,14 +17,23 @@ const Onboarding = () => {
     show_gender: false,
     gender_identity: "man",
     gender_interest: "woman",
-    email: "",
     url: "",
     about: "",
     matches: [],
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
     console.log("submitted");
+    e.preventDefault();
+    try {
+      const response = await axios.put("http://localhost:8000/user", {
+        formData,
+      });
+      const success = response.status === 200;
+      if (success) navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleChange = (e) => {
