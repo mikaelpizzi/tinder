@@ -37,7 +37,7 @@ app.post("/login", async (req, res) => {
       const token = jwt.sign(user, email, {
         expiresIn: 60 * 24,
       });
-      res.status(201).json({ token, userId: user.user_id, email });
+      res.status(201).json({ token });
     }
 
     res.status(400).send("Invalid Credentials");
@@ -77,9 +77,7 @@ app.post("/signup", async (req, res) => {
     const token = jwt.sign(insertedUser, sanitizedEmail, {
       expiresIn: 60 * 24,
     });
-    res
-      .status(201)
-      .json({ token, userId: generatedUserId, email: sanitizedEmail });
+    res.status(201).json({ token });
   } catch (err) {
     console.log(err);
   } finally {
