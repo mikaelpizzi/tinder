@@ -126,7 +126,7 @@ app.put("/user", async (req, res) => {
       },
     };
 
-    const insertedUser = await user.updateOne(query, updateDocument);
+    const insertedUser = await users.updateOne(query, updateDocument);
     res.send(insertedUser);
   } catch (error) {
     console.log(error);
