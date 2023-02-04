@@ -1,21 +1,33 @@
-import { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
+import { useEffect, useState } from "react";
 import ChatContainer from "../components/ChatContainer";
-import axios from "axios";
 import { useCookies } from "react-cookie";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
-  const userId = cookies.UserId;
   const [user, setUser] = useState(null);
+  const [genderedUsers, setGenderedUsers] = useState(null);
+  const [lastDirection, setLastDirection] = useState();
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+
+  const userId = cookies.UserId;
 
   const getUser = async () => {
     try {
       const response = await axios.get("http://localhost:8000/user", {
         params: { userId },
       });
-
       setUser(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getGenderedUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/gendered-users", {
+        params: { gender: user?.gender_interest },
+      });
+      setGenderedUsers(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -25,36 +37,28 @@ const Dashboard = () => {
     getUser();
   }, []);
 
-  console.log("user: ", user);
+  useEffect(() => {
+    if (user) {
+      getGenderedUsers();
+    }
+  }, [user]);
 
-  const db = [
-    {
-      name: "Richard Hendricks",
-      url: "https://media.istockphoto.com/id/1313939390/es/foto/joven-adulto-feliz-mujer-asi%C3%A1tica-usar-anteojos-usando-el-tel%C3%A9fono-m%C3%B3vil-para-la-aplicaci%C3%B3n-de.jpg?s=1024x1024&w=is&k=20&c=a37GNX4n5CwRJhpBqbIf2jbTA-qqIRfBrIbqMy4rfqA=",
-    },
-    {
-      name: "Erlich Bachman",
-      url: "https://media.istockphoto.com/id/1313939390/es/foto/joven-adulto-feliz-mujer-asi%C3%A1tica-usar-anteojos-usando-el-tel%C3%A9fono-m%C3%B3vil-para-la-aplicaci%C3%B3n-de.jpg?s=1024x1024&w=is&k=20&c=a37GNX4n5CwRJhpBqbIf2jbTA-qqIRfBrIbqMy4rfqA=",
-    },
-    {
-      name: "Monica Hall",
-      url: "https://media.istockphoto.com/id/1313939390/es/foto/joven-adulto-feliz-mujer-asi%C3%A1tica-usar-anteojos-usando-el-tel%C3%A9fono-m%C3%B3vil-para-la-aplicaci%C3%B3n-de.jpg?s=1024x1024&w=is&k=20&c=a37GNX4n5CwRJhpBqbIf2jbTA-qqIRfBrIbqMy4rfqA=",
-    },
-    {
-      name: "Jared Dunn",
-      url: "https://media.istockphoto.com/id/1313939390/es/foto/joven-adulto-feliz-mujer-asi%C3%A1tica-usar-anteojos-usando-el-tel%C3%A9fono-m%C3%B3vil-para-la-aplicaci%C3%B3n-de.jpg?s=1024x1024&w=is&k=20&c=a37GNX4n5CwRJhpBqbIf2jbTA-qqIRfBrIbqMy4rfqA=",
-    },
-    {
-      name: "Dinesh Chugtai",
-      url: "https://media.istockphoto.com/id/1313939390/es/foto/joven-adulto-feliz-mujer-asi%C3%A1tica-usar-anteojos-usando-el-tel%C3%A9fono-m%C3%B3vil-para-la-aplicaci%C3%B3n-de.jpg?s=1024x1024&w=is&k=20&c=a37GNX4n5CwRJhpBqbIf2jbTA-qqIRfBrIbqMy4rfqA=",
-    },
-  ];
+  const updateMatches = async (matchedUserId) => {
+    try {
+      await axios.put("http://localhost:8000/addmatch", {
+        userId,
+        matchedUserId,
+      });
+      getUser();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  const characters = db;
-  const [lastDirection, setLastDirection] = useState();
-
-  const swiped = (direction, nameToDelete) => {
-    console.log("removing: " + nameToDelete);
+  const swiped = (direction, swipedUserId) => {
+    if (direction === "right") {
+      updateMatches(swipedUserId);
+    }
     setLastDirection(direction);
   };
 
@@ -62,6 +66,15 @@ const Dashboard = () => {
     console.log(name + " left the screen!");
   };
 
+  const matchedUserIds = user?.matches
+    .map(({ user_id }) => user_id)
+    .concat(userId);
+
+  const filteredGenderedUsers = genderedUsers?.filter(
+    (genderedUser) => !matchedUserIds.includes(genderedUser.user_id)
+  );
+
+  console.log("filteredGenderedUsers ", filteredGenderedUsers);
   return (
     <>
       {user && (
@@ -69,22 +82,21 @@ const Dashboard = () => {
           <ChatContainer user={user} />
           <div className="swipe-container">
             <div className="card-container">
-              {characters.map((character) => (
+              {filteredGenderedUsers?.map((genderedUser) => (
                 <TinderCard
                   className="swipe"
-                  key={character.name}
-                  onSwipe={(dir) => swiped(dir, character.name)}
-                  onCardLeftScreen={() => outOfFrame(character.name)}
+                  key={genderedUser.user_id}
+                  onSwipe={(dir) => swiped(dir, genderedUser.user_id)}
+                  onCardLeftScreen={() => outOfFrame(genderedUser.first_name)}
                 >
                   <div
-                    style={{ backgroundImage: "url(" + character.url + ")" }}
+                    style={{ backgroundImage: "url(" + genderedUser.url + ")" }}
                     className="card"
                   >
-                    <h3>{character.name}</h3>
+                    <h3>{genderedUser.first_name}</h3>
                   </div>
                 </TinderCard>
               ))}
-
               <div className="swipe-info">
                 {lastDirection ? <p>You swiped {lastDirection}</p> : <p />}
               </div>
@@ -95,5 +107,4 @@ const Dashboard = () => {
     </>
   );
 };
-
 export default Dashboard;
