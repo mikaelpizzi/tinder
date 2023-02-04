@@ -11,12 +11,52 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Home
+// Default
 app.get("/", (req, res) => {
-  res.json("Hello");
+  res.json("Hello to my app");
 });
 
-// Log in a user
+// Sign up to the Database
+app.post("/signup", async (req, res) => {
+  const client = new MongoClient(uri);
+  const { email, password } = req.body;
+
+  const generatedUserId = uuidv4();
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    const existingUser = await users.findOne({ email });
+
+    if (existingUser) {
+      return res.status(409).send("User already exists. Please login");
+    }
+
+    const sanitizedEmail = email.toLowerCase();
+
+    const data = {
+      user_id: generatedUserId,
+      email: sanitizedEmail,
+      hashed_password: hashedPassword,
+    };
+
+    const insertedUser = await users.insertOne(data);
+
+    const token = jwt.sign(insertedUser, sanitizedEmail, {
+      expiresIn: 60 * 24,
+    });
+    res.status(201).json({ token, userId: generatedUserId });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+  }
+});
+
+// Log in to the Database
 app.post("/login", async (req, res) => {
   const client = new MongoClient(uri);
   const { email, password } = req.body;
@@ -40,44 +80,7 @@ app.post("/login", async (req, res) => {
       res.status(201).json({ token, userId: user.user_id });
     }
 
-    res.status(400).send("Invalid Credentials");
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-// Sign up a user to the database
-app.post("/signup", async (req, res) => {
-  const client = new MongoClient(uri);
-  const { email, password } = req.body;
-
-  const generatedUserId = uuidv1();
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  try {
-    await client.connect();
-    const database = client.db("app-data");
-    const users = database.collection("users");
-    const sanitizedEmail = email.toLowerCase();
-
-    const existingUser = await users.findOne({ sanitizedEmail });
-
-    if (existingUser) {
-      return res.status(409).send("User already exists. Please log in");
-    }
-
-    const data = {
-      user_id: generatedUserId,
-      email: sanitizedEmail,
-      hashed_password: hashedPassword,
-    };
-
-    const insertedUser = await users.insertOne(data);
-
-    const token = jwt.sign(insertedUser, sanitizedEmail, {
-      expiresIn: 60 * 24,
-    });
-    res.status(201).json({ token, userId: generatedUserId });
+    res.status(400).json("Invalid Credentials");
   } catch (err) {
     console.log(err);
   } finally {
@@ -85,7 +88,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Get an user
+// Get individual user
 app.get("/user", async (req, res) => {
   const client = new MongoClient(uri);
   const userId = req.query.userId;
@@ -96,31 +99,80 @@ app.get("/user", async (req, res) => {
     const users = database.collection("users");
 
     const query = { user_id: userId };
-
     const user = await users.findOne(query);
-
     res.send(user);
   } finally {
     await client.close();
   }
 });
 
-// Get users
-app.get("/users", async (req, res) => {
+// Update User with a match
+app.put("/addmatch", async (req, res) => {
   const client = new MongoClient(uri);
+  const { userId, matchedUserId } = req.body;
+
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
 
-    const returnedUsers = await users.find().toArray();
-    res.send(returnedUsers);
+    const query = { user_id: userId };
+    const updateDocument = {
+      $push: { matches: { user_id: matchedUserId } },
+    };
+    const user = await users.updateOne(query, updateDocument);
+    res.send(user);
   } finally {
     await client.close();
   }
 });
 
-// Update an user
+// Get all Users by userIds in the Database
+app.get("/users", async (req, res) => {
+  const client = new MongoClient(uri);
+  const userIds = JSON.parse(req.query.userIds);
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    const pipeline = [
+      {
+        $match: {
+          user_id: {
+            $in: userIds,
+          },
+        },
+      },
+    ];
+
+    const foundUsers = await users.aggregate(pipeline).toArray();
+
+    res.json(foundUsers);
+  } finally {
+    await client.close();
+  }
+});
+
+// Get all the Gendered Users in the Database
+app.get("/gendered-users", async (req, res) => {
+  const client = new MongoClient(uri);
+  const gender = req.query.gender;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+    const query = { gender_identity: { $eq: gender } };
+    const foundUsers = await users.find(query).toArray();
+    res.json(foundUsers);
+  } finally {
+    await client.close();
+  }
+});
+
+// Update a User in the Database
 app.put("/user", async (req, res) => {
   const client = new MongoClient(uri);
   const formData = req.body.formData;
@@ -140,6 +192,7 @@ app.put("/user", async (req, res) => {
         dob_year: formData.dob_year,
         show_gender: formData.show_gender,
         gender_identity: formData.gender_identity,
+        gender_interest: formData.gender_interest,
         url: formData.url,
         about: formData.about,
         matches: formData.matches,
@@ -147,12 +200,11 @@ app.put("/user", async (req, res) => {
     };
 
     const insertedUser = await users.updateOne(query, updateDocument);
-    res.send(insertedUser);
-  } catch (error) {
-    console.log(error);
+
+    res.json(insertedUser);
   } finally {
     await client.close();
   }
 });
 
-app.listen(PORT, () => console.log("Server running on port ", PORT));
+app.listen(PORT, () => console.log("server running on PORT " + PORT));
