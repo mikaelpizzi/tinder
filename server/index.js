@@ -5,8 +5,10 @@ const { v1: uuidv1 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const uri =
-  "mongodb+srv://mozart:amadeus@cluster0.tgjmuwg.mongodb.net/?retryWrites=true&w=majority";
+require("dotenv").config();
+
+const uri = process.env.URI;
+
 const app = express();
 app.use(cors());
 app.use(express.json());

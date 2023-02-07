@@ -32,9 +32,9 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
 
   return (
     <div className="matches-display">
-      {filteredMatchedProfiles?.map((match, _index) => (
+      {filteredMatchedProfiles?.map((match) => (
         <div
-          key={_index}
+          key={match.userId}
           className="match-card"
           onClick={() => setClickedUser(match)}
         >
