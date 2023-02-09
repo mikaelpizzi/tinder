@@ -22,6 +22,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
     try {
       if (isSignUp && password !== confirmPassword) {
         setError("Passwords need to match!");
+        console.log("ERROR: ", error);
         return;
       }
 
@@ -39,7 +40,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
 
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      if (error.code === "ERR_BAD_REQUEST") setError("Invalid credentials");
     }
   };
 
@@ -82,7 +83,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
           />
         )}
         <input className="secondary-button" type="submit" />
-        <p>{error}</p>
+        <p style={{ color: "red" }}>{error}</p>
       </form>
 
       <hr />

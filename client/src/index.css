@@ -311,6 +311,10 @@ nav .logo-container .logo {
   border-bottom: solid 4px rgb(187, 187, 187);
 }
 
+.log-out-icon {
+  cursor: pointer;
+}
+
 .chat-container .log-out-icon,
 .chat-container .profile {
   display: flex;
