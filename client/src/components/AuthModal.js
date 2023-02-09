@@ -40,7 +40,7 @@ const AuthModal = ({ setShowModal, isSignUp }) => {
 
       window.location.reload();
     } catch (error) {
-      if (error.code === "ERR_BAD_REQUEST") setError("Invalid credentials");
+      if (error.code === "ERR_BAD_REQUEST") setError("Invalid credentials!");
     }
   };
 
